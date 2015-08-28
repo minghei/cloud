@@ -7,7 +7,13 @@ var port = process.env.PORT || 8081;
 
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
+var pub = require('redis').createClient(6379,'tmh1981.redis.cache.windows.net', 
+	{auth_pass: 'DNkysQyYS6SZfbUzGzOK4vW1fWEp9NVtqcqekmYaNQ4=', return_buffers: true});
+var sub = require('redis').createClient(6379,'tmh1981.redis.cache.windows.net', 
+	{auth_pass: 'DNkysQyYS6SZfbUzGzOK4vW1fWEp9NVtqcqekmYaNQ4=', return_buffers: true});
 
+var redis = require('socket.io-redis');
+io.adapter(redis({pubClient: pub, subClient: sub}));
 
 app.use(express.static(__dirname + '/public'));
 
