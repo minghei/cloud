@@ -4,6 +4,11 @@ var app = express();
 
 var port = process.env.PORT || 8081;
 
+
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
+
+
 app.use(express.static(__dirname + '/public'));
 
 
