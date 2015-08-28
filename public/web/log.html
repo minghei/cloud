@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Log Compare</title>
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		 <link rel="stylesheet" href="styles/kendo.common.min.css" />
+    	<link rel="stylesheet" href="styles/kendo.default.min.css" />
+	</head>
+	
+		<style>
+			.some-margin{
+				margin-top : 10px;
+			}
+			#listView , #listView2{
+            padding: 10px 5px;
+            margin-bottom: -1px;
+            min-height: 180px;
+        }
+		</style>
+		<body>
+
+		<div class="container">
+			<div class="panel panel-default col-md-6 col-lg-6   some-margin">
+  				<div class="panel-body">
+  				<div id="listView"></div>
+  				 <div id="pager" class="k-pager-wrap"></div>
+  				  <textarea readonly id="parse" class="form-control" rows="20"></textarea>
+  				 <textarea readonly id="raw" class="form-control" rows="5"></textarea>
+  				</div>
+			</div>
+			<div class="panel panel-default col-md-6 col-lg-6  some-margin">
+  				 <div class="panel-body">
+  				<div id="listView2"></div>
+  				 <div id="pager2" class="k-pager-wrap"></div>
+  				  <textarea readonly id="parse2" class="form-control" rows="20"></textarea>
+  				 <textarea readonly id="raw2" class="form-control" rows="5"></textarea>
+  				</div>
+			</div>
+		</div>
+		
+
+		
+		<script type="text/javascript" src="js/jquery.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/kendo.ui.core.min.js"></script>
+	
+		<script type="text/javascript">
+		$(function() {
+		
+  var dataSource = new kendo.data.DataSource({
+            transport: {
+                read: {
+                    url: "http://rd-tsuiminghei-imac.local:8001/api/Books?simple=yes",
+                    type: "GET",
+                    dataType: "json",
+                    contentType: 'application/json; charset=utf-8'
+                }
+            },
+            pageSize: 10
+        });
+         
+                function onChange() {
+                var data = dataSource.view(),
+                    selected = $.map(this.select(), function(item) {
+                        return data[$(item).index()]._id;
+                    });
+                $.get( "http://rd-tsuiminghei-imac.local:8001/api/Books/" + selected, function( data ) {
+					$("#parse").html(data.title);
+					$("#raw").html(data.lraw);
+					$('#parse').scrollTop($('#parse')[0].scrollHeight);
+				});
+            }
+            
+             $("#pager").kendoPager({
+                dataSource: dataSource
+            });
+            
+	$("#listView").kendoListView({
+	  dataSource: dataSource,
+        template: kendo.template("<div><strong>${lyear}-${lmonth}-${lday} ${lhour}:${lminute}.${lsecond}</strong> (Log: ${ldate})</div>"),
+        selectable: "single",
+        change: onChange,
+        dataBound: function () {
+        }
+    });
+    
+
+         <!-- -->
+         
+           var dataSource2 = new kendo.data.DataSource({
+            transport: {
+                read: {
+                    url: "http://rd-tsuiminghei-imac.local:8001/api/Books?simple=yes",
+                    type: "GET",
+                    dataType: "json",
+                    contentType: 'application/json; charset=utf-8'
+                }
+            },
+            pageSize: 10
+        });
+         
+                function onChange2() {
+                var data = dataSource2.view(),
+                    selected = $.map(this.select(), function(item) {
+                        return data[$(item).index()]._id;
+                    });
+                $.get( "http://rd-tsuiminghei-imac.local:8001/api/Books/" + selected, function( data ) {
+					$("#parse2").html(data.title);
+					$("#raw2").html(data.lraw);
+					$('#parse2').scrollTop($('#parse2')[0].scrollHeight);
+				});
+            }
+            
+             $("#pager2").kendoPager({
+                dataSource: dataSource2
+            });
+            
+	$("#listView2").kendoListView({
+	  dataSource: dataSource2,
+        template: kendo.template("<div><strong>${lyear}-${lmonth}-${lday} ${lhour}:${lminute}.${lsecond}</strong> (Log: ${ldate})</div>"),
+        selectable: "single",
+        change: onChange2,
+        dataBound: function () {
+        }
+    });
+       
+            
+    
+
+
+		});
+		</script>
+	</body>
+</html>
