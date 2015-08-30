@@ -6,8 +6,9 @@ var io = require('socket.io')(http);
 var port = process.env.PORT || 8081;
 
 
+app.use(express.static(__dirname + '/public'));
 
-app.get('/', function(req, res){
+app.get('/ss', function(req, res){
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
@@ -15,7 +16,7 @@ app.get('/', function(req, res){
     res.set('Content-Type', 'text/plain');
     res.send("done");
 });
-app.use(express.static(__dirname + '/public'));
+
 io.on('connection', function(socket){
   console.log("connected");
   socket.on('disconnect', function () {
