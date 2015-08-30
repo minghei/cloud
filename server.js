@@ -19,10 +19,30 @@ app.use(express.static(__dirname + '/public'));
 io.on('connection', function(socket){
   console.log("connected");
   socket.on('disconnect', function () {
-      console.log("disconnected");
+      console.log("disconnected"); 
   });
-  socket.on('chat message', function (msg) {
+  socket.on('chat message', function (msg, roomv) {
+
+    if(roomv){
+      io.sockets.to(roomv).emit('chat message', msg);
+    }else{
       io.emit('chat message', msg);
+    }
+      
+  });
+  socket.on('join', function (msg) {
+      socket.join(msg);
+      socket.room = msg;
+  });
+  socket.on('leave', function (msg) {
+      socket.leave(msg);
+      socket.room = "";
+  });
+  socket.on('rooms', function () {
+       socket.emit('room', socket.rooms);
+  });
+  socket.on('id', function () {
+       socket.emit('id', socket.id);
   });
 });
 
